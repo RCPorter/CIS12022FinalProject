@@ -8,7 +8,7 @@ void Snack::setHealthy() {
 
 	convChoice = tolower(choice.at(0));
 
-	while (convChoice != 'c' && convChoice != 'g') {
+	while (convChoice != 'y' && convChoice != 'n') {
 		cout << "\nError: " << choice << " is not a valid option. Please enter either y for Yes or n for No: ";
 		getline(cin, choice);
 		convChoice = tolower(choice.at(0));
@@ -20,4 +20,17 @@ void Snack::setHealthy() {
 	else {
 		healthy = false;
 	}
+}
+
+void Snack::showCons() {
+	for (int i = 0; i < ate.size(); i++) {
+		showItem(i);
+	}
+	if (healthy) {
+		cout << "\nThis Snack was healthy!";
+	}
+	else {
+		cout << "\nThis Snack was NOT healthy!";
+	}
+
 }

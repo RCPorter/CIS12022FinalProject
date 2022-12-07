@@ -13,7 +13,7 @@ public:
 
 	//Accessor
 	int getTotalCals();
-
+	void showCons();
 };
 
 #endif MEAL_H

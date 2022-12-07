@@ -1,7 +1,7 @@
 #include "Consume.h"
 
 
-void Consume::addItem(const vector<FoodItem> &list, FoodItem food) {
+void Consume::addItem(const FoodItem& food) {
 
 	pair<FoodItem, int> temp;
 	string holdQty;
@@ -19,22 +19,51 @@ void Consume::addItem(const vector<FoodItem> &list, FoodItem food) {
 
 	temp.first = food;
 	temp.second = convQty;
+
+	ate.push_back(temp);
 }
 
-int Consume::itemCal(const pair<FoodItem, int> &item) {
-	return item.first.calPerUnit * item.second;
+int Consume::itemCal(int sub) {
+	return ate[sub].first.calPerUnit * ate[sub].second;
 }
 
-void Consume::showItem(const pair<FoodItem, int> &item) {
-	cupGram(item.first.unit);
-	cout << " of " << item.first.name << ": ";
-	itemCal(item);
+void Consume::showItem(int sub) {
+	cupGram(ate[sub].first.unit);
+	cout << " of " << ate[sub].first.name << ": ";
+	itemCal(sub);
 	cout << " Calories";
 }
 
 void Consume::showList() {
 
 	for (int i = 0; i < ate.size(); i++) {
-		showItem(ate[i]);
+		showItem(i);
+	}
+}
+
+int Consume::intCheck(const string& test) {
+	for (int i = 0; i < test.length(); i++) {
+		if (!isdigit(test.at(i))) {
+			return 0;
+		}
+	}
+	return stoi(test);
+
+}
+
+void Consume::intErr(string& test) {
+	cout << "\nError: " << test << " is not a valid option. Please enter a positive whole number (ex. 100): ";
+	getline(cin, test);
+}
+
+void Consume::cupGram(char unit) {
+	if (unit == 'g') {
+		cout << "Grams";
+	}
+	else if (unit == 'c') {
+		cout << "Cups";
+	}
+	else {
+		cout << "Critical Unit Error";
 	}
 }

@@ -2,7 +2,11 @@
 #define CONSUME_H
 #include <vector>
 #include <utility>
-#include "Func.h"
+#include <string>
+#include <iostream>
+using namespace std;
+
+//#include "Func.h"
 struct FoodItem {
 	string name;
 	char unit; 
@@ -15,10 +19,14 @@ protected:
 	vector<pair<FoodItem, int>> ate; 
 public:
 	Consume() {}
-	void addItem(const vector<FoodItem>& list, FoodItem food);
-	int itemCal(const pair<FoodItem, int>& item);
-	void showItem(const pair<FoodItem, int>& item);
+	
+	void addItem(const FoodItem& food);
+	int itemCal(int sub);
+	void showItem(int sub);
 	void showList();
+	int intCheck(const string& test);
+	void intErr(string& test);
+	void cupGram(char unit);
 };
 
 #endif CONSUME_H

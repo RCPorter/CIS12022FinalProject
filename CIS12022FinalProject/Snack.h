@@ -10,13 +10,14 @@ private:
 
 public:
 	//Constuctor
-	Snack() : Consume::Consume() { };
+	Snack() : Consume::Consume() {};
 	
 	//Mutator
 	void setHealthy();
 
 	//Accessor
 	inline bool getHealthy() { return healthy; };
+	void showCons();
 };
 
 #endif SNACK_H
