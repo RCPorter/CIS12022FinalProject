@@ -25,6 +25,13 @@ int main() {
 	vector<FoodItem> savedItems;
 	readSave(savedItems);
 	
+	cout << "Testing Save File";
+	for (int i = 0; i < savedItems.size(); i++) {
+		cout << "\n\n\nName: " << savedItems[i].name
+			<< "\nUnit: " << savedItems[i].unit
+			<< "\nCals: " << savedItems[i].calPerUnit;
+	}
+
 	vector<Meal> listMeal;
 	vector<Snack> listSnack;
 
@@ -192,9 +199,12 @@ void readSave(vector<FoodItem>& list) {
 		cout << "\n\nError opening file. Program Aborting.";
 		exit(EXIT_FAILURE);
 	}
-	FoodItem temp = { "", 'c', 1 };
+	FoodItem temp;
 	saveFile.read(reinterpret_cast<char*>(&temp), sizeof(temp));
-	while (saveFile) {
+	list.emplace_back(temp);
+	cout << "Temp: " << temp.name << " : " << temp.unit << " : " << temp.calPerUnit << endl;
+	cout << "List: " << list[0].name << " : " << list[0].unit << " : " << list[0].calPerUnit << endl;
+	while (//Find A way to end loop at eof !! Find eof alt) {
 		list.push_back(temp);
 		saveFile.read(reinterpret_cast<char*>(&temp), sizeof(temp));
 	}
