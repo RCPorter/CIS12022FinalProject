@@ -1,7 +1,7 @@
 #include "Consume.h"
 
 
-void Consume::addItem(const FoodItem& food) {
+void Consume::addItem(const FoodItem& food, const string& foodName) {
 
 	pair<FoodItem, int> temp;
 	string holdQty;
@@ -9,7 +9,7 @@ void Consume::addItem(const FoodItem& food) {
 
 	cout << "\nPlease enter how many ";
 	cupGram(food.unit);
-	cout << " of " << food.name << " you ate: ";
+	cout << " of " << foodName << " you ate: ";
 	getline(cin, holdQty);
 	convQty = intCheck(holdQty);
 	while (!convQty) {
@@ -21,6 +21,7 @@ void Consume::addItem(const FoodItem& food) {
 	temp.second = convQty;
 
 	ate.push_back(temp);
+	name.push_back(foodName);
 }
 
 int Consume::itemCal(int sub) {
@@ -30,7 +31,7 @@ int Consume::itemCal(int sub) {
 void Consume::showItem(int sub) {
 	cout << endl << ate[sub].second << " ";
 	cupGram(ate[sub].first.unit);
-	cout << " of " << ate[sub].first.name << ": " << itemCal(sub);
+	cout << " of " << name[sub] << ": " << itemCal(sub);
 	cout << " Calories";
 }
 

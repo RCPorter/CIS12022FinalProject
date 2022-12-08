@@ -6,21 +6,21 @@
 #include <iostream>
 using namespace std;
 
-//#include "Func.h"
 struct FoodItem {
-	string name;
 	char unit; 
 	int calPerUnit;
 };
 
+
 class Consume
 {
 protected:
-	vector<pair<FoodItem, int>> ate; 
+	vector<pair<FoodItem, int>> ate;
+	vector<string> name;
 public:
 	Consume() {}
 	
-	void addItem(const FoodItem& food);
+	void addItem(const FoodItem& food, const string& name);
 	int itemCal(int sub);
 	void showItem(int sub);
 	void showList();

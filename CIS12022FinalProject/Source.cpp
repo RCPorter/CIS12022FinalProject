@@ -8,39 +8,33 @@
 #include "Snack.h"
 #include <fstream>
 
-int getItem(vector<FoodItem>& list);
-int checkList(const string& search, const vector<FoodItem> &list);
-void addItem(vector<FoodItem>& list, string name);
+int getItem(vector<FoodItem>& savedList, vector<string>& savedName);
+int checkList(const string& search, const vector<FoodItem>& savedList, const vector<string>& savedName);
+void addItem(vector<FoodItem>& savedList, vector<string>& savedName, string newName);
 int intCheck(const string& test);
 void intErr( string& test);
 void charCheck(string& inp, char& test, char x, char y);
 void cupGram(char unit);
-void addCons(vector<Meal>& listM, vector<FoodItem>& listFI);
-void addCons(vector<Snack>& listS, vector<FoodItem>& listFI);
-void readSave(vector<FoodItem>& list);
-void writeSave(vector<FoodItem>& list);
+void addCons(vector<Meal>& listM, vector<FoodItem>& listFI, vector<string>& listN);
+void addCons(vector<Snack>& listS, vector<FoodItem>& listFI, vector<string>& listN);
+//void readSave(vector<FoodItem>& list);
+//void writeSave(vector<FoodItem>& list);
 
 int main() {
 
 	vector<FoodItem> savedItems;
-	readSave(savedItems);
+	vector<string> savedNames;
+	/*readSave(savedItems);*/
 	
-	cout << "Testing Save File";
-	for (int i = 0; i < savedItems.size(); i++) {
-		cout << "\n\n\nName: " << savedItems[i].name
-			<< "\nUnit: " << savedItems[i].unit
-			<< "\nCals: " << savedItems[i].calPerUnit;
-	}
-
 	vector<Meal> listMeal;
 	vector<Snack> listSnack;
 
 	cout << "\nAdding Meal: ";
-	addCons(listMeal, savedItems);
+	addCons(listMeal, savedItems, savedNames);
 	cout << "\nFinished Adding Meal: ";
 
 	cout << "\nAdding Snack: ";
-	addCons(listSnack, savedItems);
+	addCons(listSnack, savedItems, savedNames);
 	cout << "\nFinished Adding Snack: ";
 
 	cout << "\nShowing Meal: ";
@@ -51,26 +45,26 @@ int main() {
 	listSnack[0].showCons();
 	cout << "\nDone Showing Snack: ";
 
-	writeSave(savedItems);
+	/*writeSave(savedItems);*/
 	
 	cout << endl << endl;
 	system("pause");
 	return 0;
 }
 
-int getItem(vector<FoodItem>& list) {
+int getItem(vector<FoodItem>& savedList, vector<string>& savedName) {
 	
 	string name;
 
 	cout << "\nPlease enter the name of the food: ";
 	getline(cin, name);
-	int found = checkList(name, list);
+	int found = checkList(name, savedList, savedName);
 	
 	if (found < 0) {
 		
 		cout << "\nYou have not entered the information for " << name << " yet.\n";
-		addItem(list, name);
-		return list.size() - 1;
+		addItem(savedList, savedName, name);
+		return savedList.size() - 1;
 
 	}
 	else {
@@ -79,12 +73,12 @@ int getItem(vector<FoodItem>& list) {
 
 }
 
-int checkList(const string &search, const vector<FoodItem>& list) {
+int checkList(const string &search, const vector<FoodItem>& savedList, const vector<string>& savedName) {
 
 	int isInList = -1; //-1 for not found
 
-	for (int i = 0; i < list.size(); i++) {
-		if (search == list[i].name) {
+	for (int i = 0; i < savedList.size(); i++) {
+		if (search == savedName[i]) {
 			isInList = i;
 		}
 	}
@@ -93,13 +87,13 @@ int checkList(const string &search, const vector<FoodItem>& list) {
 
 }
 
-void addItem(vector<FoodItem>& list, string name) {
+void addItem(vector<FoodItem>& savedList, vector<string>& savedName, string newName) {
 
 	FoodItem temp;
 
 	string holdUnit; //g for Gram, c for Cup
 	char convUnit;
-	cout << "\nPlease enter which unit you will use for " << name << " (g for per Gram, c for per Cup) : ";
+	cout << "\nPlease enter which unit you will use for " << newName << " (g for per Gram, c for per Cup) : ";
 	getline(cin, holdUnit);
 	convUnit = tolower(holdUnit.at(0));
 	
@@ -109,7 +103,7 @@ void addItem(vector<FoodItem>& list, string name) {
 	int convCals;
 	cout << "\nPlease enter how many caleries are in a ";
 	cupGram(convUnit);
-	cout << " of " << name << ": ";
+	cout << " of " << newName << ": ";
 	getline(cin, holdCals);
 	convCals = intCheck(holdCals);
 	while (!convCals) {
@@ -117,9 +111,9 @@ void addItem(vector<FoodItem>& list, string name) {
 		convCals = intCheck(holdCals);
 	}
 
-	temp = { name, convUnit, convCals };
-	list.push_back(temp);
-
+	temp = { convUnit, convCals };
+	savedList.push_back(temp);
+	savedName.push_back(newName);
 }
 
 int intCheck(const string& test) {
@@ -157,13 +151,15 @@ void cupGram(char unit) {
 	}
 }
 
-void addCons(vector<Meal>& listM, vector<FoodItem>& listFI) {
+void addCons(vector<Meal>& listM, vector<FoodItem>& listFI, vector<string>& listN) {
 
 	Meal temp;
+	int sub;
 	char again = 'n';
 
 	do {
-		temp.addItem(listFI[getItem(listFI)]);
+		sub = getItem(listFI, listN);
+		temp.addItem(listFI[sub], listN[sub]);
 		cout << "\nAdd another food to the meal? (y for Yes, n for No)";
 		string holdAgain;
 		getline(cin, holdAgain);
@@ -174,13 +170,15 @@ void addCons(vector<Meal>& listM, vector<FoodItem>& listFI) {
 	listM.push_back(temp);
 }
 
-void addCons(vector<Snack>& listS, vector<FoodItem>& listFI) {
+void addCons(vector<Snack>& listS, vector<FoodItem>& listFI, vector<string>& listN) {
 
 	Snack temp;
+	int sub;
 	char again = 'n';
 
 	do {
-		temp.addItem(listFI[getItem(listFI)]);
+		sub = getItem(listFI, listN);
+		temp.addItem(listFI[sub], listN[sub]);
 		string holdAgain;
 		cout << "\nAdd another food to the snack? (y for Yes, n for No): ";
 		getline(cin, holdAgain);
@@ -193,28 +191,33 @@ void addCons(vector<Snack>& listS, vector<FoodItem>& listFI) {
 	listS.push_back(temp);
 }
 
-void readSave(vector<FoodItem>& list) {
-	fstream saveFile("FoodItems.dat", ios::in | ios::binary);
-	if (!saveFile) {
-		cout << "\n\nError opening file. Program Aborting.";
-		exit(EXIT_FAILURE);
-	}
-	FoodItem temp;
-	saveFile.read(reinterpret_cast<char*>(&temp), sizeof(temp));
-	list.emplace_back(temp);
-	cout << "Temp: " << temp.name << " : " << temp.unit << " : " << temp.calPerUnit << endl;
-	cout << "List: " << list[0].name << " : " << list[0].unit << " : " << list[0].calPerUnit << endl;
-	while (//Find A way to end loop at eof !! Find eof alt) {
-		list.push_back(temp);
-		saveFile.read(reinterpret_cast<char*>(&temp), sizeof(temp));
-	}
-	saveFile.close();
-}
-
-void writeSave(vector<FoodItem>& list) {
-	fstream saveFile("FoodItems.dat", ios::out | ios::binary);
-	for (int i = 0; i < list.size(); i++) {
-		saveFile.write(reinterpret_cast<char*>(&list[i]), sizeof(list[i]));
-	}
-	saveFile.close();
-}
+//void readSave(vector<FoodItem>& list) {
+//	fstream totFile("Total.txt", ios::in);
+//	int totalSavedItems = 0;
+//	totFile >> totalSavedItems;
+//	cout << "\n\nTotalSavedItems: " << totalSavedItems;
+//	totFile.close();
+//	fstream saveFile("FoodItems.dat", ios::in | ios::binary);
+//	if (!saveFile) {
+//		cout << "\n\nError opening file. Program Aborting.";
+//		exit(EXIT_FAILURE);
+//	}
+//	FoodItem temp;
+//	for (int i = 0; i < totalSavedItems; i++) { 
+//		saveFile.read(reinterpret_cast<char*>(&temp), sizeof(temp));
+//		list.push_back(temp);
+//		cout << endl << i << " : " << list[i].unit << " : " << list[i].calPerUnit;
+//	}
+//	saveFile.close();
+//}
+//
+//void writeSave(vector<FoodItem>& list) {
+//	fstream totFile("Total.txt", ios::out);
+//	totFile << list.size();
+//	totFile.close();
+//	fstream saveFile("FoodItems.dat", ios::out | ios::binary);
+//	for (int i = 0; i < list.size(); i++) {
+//		saveFile.write(reinterpret_cast<char*>(&list[i]), sizeof(list[i]));
+//	}
+//	saveFile.close();
+//}
