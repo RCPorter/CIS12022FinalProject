@@ -188,9 +188,13 @@ void addCons(vector<Snack>& listS, vector<FoodItem>& listFI) {
 
 void readSave(vector<FoodItem>& list) {
 	fstream saveFile("FoodItems.dat", ios::in | ios::binary);
+	if (!saveFile) {
+		cout << "\n\nError opening file. Program Aborting.";
+		exit(EXIT_FAILURE);
+	}
 	FoodItem temp = { "", 'c', 1 };
 	saveFile.read(reinterpret_cast<char*>(&temp), sizeof(temp));
-	while (!saveFile.eof()) {
+	while (saveFile) {
 		list.push_back(temp);
 		saveFile.read(reinterpret_cast<char*>(&temp), sizeof(temp));
 	}
