@@ -1,5 +1,5 @@
-#ifndef FUNC_H
-#define FUNC_H
+//#ifndef FUNC_H
+//#define FUNC_H
 #include <string>
 #include <iostream>
 
@@ -32,4 +32,4 @@ void cupGram(char unit) {
 	}
 }
 
-#endif FUNC_H
+//#endif FUNC_H

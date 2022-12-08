@@ -6,7 +6,7 @@
 */
 #include "Meal.h"
 #include "Snack.h"
-#include <iostream>
+#include <fstream>
 
 int getItem(vector<FoodItem>& list);
 int checkList(const string& search, const vector<FoodItem> &list);
@@ -17,10 +17,14 @@ void charCheck(string& inp, char& test, char x, char y);
 void cupGram(char unit);
 void addCons(vector<Meal>& listM, vector<FoodItem>& listFI);
 void addCons(vector<Snack>& listS, vector<FoodItem>& listFI);
+void readSave(vector<FoodItem>& list);
+void writeSave(vector<FoodItem>& list);
 
 int main() {
 
 	vector<FoodItem> savedItems;
+	readSave(savedItems);
+	
 	vector<Meal> listMeal;
 	vector<Snack> listSnack;
 
@@ -40,6 +44,8 @@ int main() {
 	listSnack[0].showCons();
 	cout << "\nDone Showing Snack: ";
 
+	writeSave(savedItems);
+	
 	cout << endl << endl;
 	system("pause");
 	return 0;
@@ -86,7 +92,7 @@ void addItem(vector<FoodItem>& list, string name) {
 
 	string holdUnit; //g for Gram, c for Cup
 	char convUnit;
-	cout << "\nPlease enter which unit you will use for the food (g for per Gram, c for per Cup): ";
+	cout << "\nPlease enter which unit you will use for " << name << " (g for per Gram, c for per Cup) : ";
 	getline(cin, holdUnit);
 	convUnit = tolower(holdUnit.at(0));
 	
@@ -126,7 +132,7 @@ void intErr(string& test) {
 
 void charCheck(string& inp, char& test, char x, char y) {
 	while (test != x && test != y) {
-		cout << "\nError: " << inp << " is not a valid option. Please enter either c for Cups or g for Grams: ";
+		cout << "\nError: " << inp << " is not a valid option. Please enter either " << x << " or " << y << ": ";
 		getline(cin, inp);
 		test = tolower(inp.at(0));
 	}
@@ -134,10 +140,10 @@ void charCheck(string& inp, char& test, char x, char y) {
 
 void cupGram(char unit) {
 	if (unit == 'g') {
-		cout << "Grams";
+		cout << "Gram";
 	}
 	else if (unit == 'c') {
-		cout << "Cups";
+		cout << "Cup";
 	}
 	else {
 		cout << "Critical Unit Error";
@@ -153,7 +159,6 @@ void addCons(vector<Meal>& listM, vector<FoodItem>& listFI) {
 		temp.addItem(listFI[getItem(listFI)]);
 		cout << "\nAdd another food to the meal? (y for Yes, n for No)";
 		string holdAgain;
-		char again;
 		getline(cin, holdAgain);
 		again = tolower(holdAgain.at(0));
 		charCheck(holdAgain, again, 'y', 'n');
@@ -170,7 +175,6 @@ void addCons(vector<Snack>& listS, vector<FoodItem>& listFI) {
 	do {
 		temp.addItem(listFI[getItem(listFI)]);
 		string holdAgain;
-		char again;
 		cout << "\nAdd another food to the snack? (y for Yes, n for No): ";
 		getline(cin, holdAgain);
 		again = tolower(holdAgain.at(0));
@@ -180,4 +184,23 @@ void addCons(vector<Snack>& listS, vector<FoodItem>& listFI) {
 	temp.setHealthy();
 
 	listS.push_back(temp);
+}
+
+void readSave(vector<FoodItem>& list) {
+	fstream saveFile("FoodItems.dat", ios::in | ios::binary);
+	FoodItem temp = { "", 'c', 1 };
+	saveFile.read(reinterpret_cast<char*>(&temp), sizeof(temp));
+	while (!saveFile.eof()) {
+		list.push_back(temp);
+		saveFile.read(reinterpret_cast<char*>(&temp), sizeof(temp));
+	}
+	saveFile.close();
+}
+
+void writeSave(vector<FoodItem>& list) {
+	fstream saveFile("FoodItems.dat", ios::out | ios::binary);
+	for (int i = 0; i < list.size(); i++) {
+		saveFile.write(reinterpret_cast<char*>(&list[i]), sizeof(list[i]));
+	}
+	saveFile.close();
 }

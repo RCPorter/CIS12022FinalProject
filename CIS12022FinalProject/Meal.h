@@ -6,7 +6,7 @@ class Meal :
 	public Consume
 {
 private:
-
+	
 public:
 	//Constuctor
 	Meal() : Consume::Consume() {};

@@ -28,9 +28,9 @@ int Consume::itemCal(int sub) {
 }
 
 void Consume::showItem(int sub) {
+	cout << endl << ate[sub].second << " ";
 	cupGram(ate[sub].first.unit);
-	cout << " of " << ate[sub].first.name << ": ";
-	itemCal(sub);
+	cout << " of " << ate[sub].first.name << ": " << itemCal(sub);
 	cout << " Calories";
 }
 
