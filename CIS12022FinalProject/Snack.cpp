@@ -23,6 +23,7 @@ void Snack::setHealthy() {
 }
 
 void Snack::showCons() {
+	cout << endl;
 	for (int i = 0; i < ate.size(); i++) {
 		showItem(i);
 	}

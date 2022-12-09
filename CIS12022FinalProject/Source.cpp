@@ -7,6 +7,7 @@
 #include "Meal.h"
 #include "Snack.h"
 #include <fstream>
+#include <iomanip>
 
 int getItem(vector<FoodItem>& savedList, vector<string>& savedName);
 int checkList(const string& search, const vector<FoodItem>& savedList, const vector<string>& savedName);
@@ -17,35 +18,49 @@ void charCheck(string& inp, char& test, char x, char y);
 void cupGram(char unit);
 void addCons(vector<Meal>& listM, vector<FoodItem>& listFI, vector<string>& listN);
 void addCons(vector<Snack>& listS, vector<FoodItem>& listFI, vector<string>& listN);
-//void readSave(vector<FoodItem>& list);
-//void writeSave(vector<FoodItem>& list);
+void readSave(vector<FoodItem>& savedList, vector<string>& savedName);
+void writeSave(vector<FoodItem>& savedList, vector<string>& savedName);
+int getMenuSelect();
+void inpErr(string inp, int numSel);
+void showList(const vector<FoodItem>& savedList, const vector<string>& savedName);
 
 int main() {
 
-	vector<FoodItem> savedItems;
-	vector<string> savedNames;
-	/*readSave(savedItems);*/
+	vector<FoodItem> savedItems;//Hold saved list of FoodItems
+	vector<string> savedNames;//Hold saved list of Names
+	readSave(savedItems, savedNames);//Read Saved FoodItems and Names from files
 	
-	vector<Meal> listMeal;
-	vector<Snack> listSnack;
+	vector<Meal> listMeal;//Hold list of meals for the day
+	vector<Snack> listSnack;//Hold list of Snacks for the day
 
-	cout << "\nAdding Meal: ";
-	addCons(listMeal, savedItems, savedNames);
-	cout << "\nFinished Adding Meal: ";
+	int menSel;//Hold menu select
+	do {
 
-	cout << "\nAdding Snack: ";
-	addCons(listSnack, savedItems, savedNames);
-	cout << "\nFinished Adding Snack: ";
+		menSel = getMenuSelect();
 
-	cout << "\nShowing Meal: ";
-	listMeal[0].showCons();
-	cout << "\nDone Showing Meal:";
+		switch (menSel) {
 
-	cout << "Showing Snack: ";
-	listSnack[0].showCons();
-	cout << "\nDone Showing Snack: ";
+		case(1):
+			addCons(listMeal, savedItems, savedNames);
+			break;
+		case(2):
+			addCons(listSnack, savedItems, savedNames);
+			break;
+		case(3):
+			showList(savedItems, savedNames);
+			break;
+		case(4):
 
-	/*writeSave(savedItems);*/
+			break;
+		case(5):
+
+			break;
+
+		}
+
+	} while (menSel != 6);
+
+	writeSave(savedItems, savedNames);
 	
 	cout << endl << endl;
 	system("pause");
@@ -101,7 +116,7 @@ void addItem(vector<FoodItem>& savedList, vector<string>& savedName, string newN
 
 	string holdCals;
 	int convCals;
-	cout << "\nPlease enter how many caleries are in a ";
+	cout << "\nPlease enter how many calories are in a ";
 	cupGram(convUnit);
 	cout << " of " << newName << ": ";
 	getline(cin, holdCals);
@@ -191,33 +206,138 @@ void addCons(vector<Snack>& listS, vector<FoodItem>& listFI, vector<string>& lis
 	listS.push_back(temp);
 }
 
-//void readSave(vector<FoodItem>& list) {
-//	fstream totFile("Total.txt", ios::in);
-//	int totalSavedItems = 0;
-//	totFile >> totalSavedItems;
-//	cout << "\n\nTotalSavedItems: " << totalSavedItems;
-//	totFile.close();
-//	fstream saveFile("FoodItems.dat", ios::in | ios::binary);
-//	if (!saveFile) {
-//		cout << "\n\nError opening file. Program Aborting.";
-//		exit(EXIT_FAILURE);
-//	}
-//	FoodItem temp;
-//	for (int i = 0; i < totalSavedItems; i++) { 
-//		saveFile.read(reinterpret_cast<char*>(&temp), sizeof(temp));
-//		list.push_back(temp);
-//		cout << endl << i << " : " << list[i].unit << " : " << list[i].calPerUnit;
-//	}
-//	saveFile.close();
-//}
-//
-//void writeSave(vector<FoodItem>& list) {
-//	fstream totFile("Total.txt", ios::out);
-//	totFile << list.size();
-//	totFile.close();
-//	fstream saveFile("FoodItems.dat", ios::out | ios::binary);
-//	for (int i = 0; i < list.size(); i++) {
-//		saveFile.write(reinterpret_cast<char*>(&list[i]), sizeof(list[i]));
-//	}
-//	saveFile.close();
-//}
+void readSave(vector<FoodItem>& savedList, vector<string>& savedName) {
+	fstream totFile("Total.txt", ios::in);
+	if (!totFile) {
+		cout << "\n\nError opening file. FileName: Total.txt. Program Aborting.";
+		exit(EXIT_FAILURE);
+	}
+	int totalSavedItems = 0;
+	totFile >> totalSavedItems;
+	totFile.close();
+
+	fstream saveName("Names.txt", ios::in);
+	if (!saveName) {
+		cout << "\n\nError opening file. FileName: Name.txt. Program Aborting.";
+		exit(EXIT_FAILURE);
+	}
+	string tempN;
+	for (int i = 0; i < totalSavedItems; i++) {
+		getline(saveName, tempN);
+		savedName.push_back(tempN);
+	}
+	saveName.close();
+
+	fstream saveFile("FoodItems.dat", ios::in | ios::binary);
+	if (!saveFile) {
+		cout << "\n\nError opening file. FileName: FoodItems.dat Program Aborting.";
+		exit(EXIT_FAILURE);
+	}
+	FoodItem tempFI;
+	for (int i = 0; i < totalSavedItems; i++) { 
+		saveFile.read(reinterpret_cast<char*>(&tempFI), sizeof(tempFI));
+		savedList.push_back(tempFI);
+	}
+	saveFile.close();
+}
+
+void writeSave(vector<FoodItem>& savedList, vector<string>& savedName) {
+	fstream totFile("Total.txt", ios::out);//Contains total number of items in the parallel lists to prevent .eof() issues
+	int total = savedList.size();
+	totFile << total;
+	totFile.close();
+
+	fstream saveName("Names.txt", ios::out);//Contains names, strings do not work in binary file operations
+	for (int i = 0; i < total; i++) {
+		saveName << savedName[i] << endl;
+
+	}
+	saveName.close();
+
+	fstream saveFile("FoodItems.dat", ios::out | ios::binary);//Contains FoodItems
+	for (int i = 0; i < total; i++) {
+		saveFile.write(reinterpret_cast<char*>(&savedList[i]), sizeof(savedList[i]));
+	}
+	saveFile.close();
+}
+
+int getMenuSelect() {
+
+	string select;
+	const int NUM_SEL = 6;
+
+	cout << setprecision(2) << fixed;
+
+	cout << "\nMain Menu:\n"
+		<< "Option 1: Add Meal"
+		<< "Option 2: Add Snack"
+		<< "Option 3: See List of Food Items"
+		<< "Option 4: Show Average Calories Per Meal"
+		<< "Option 5: Show Healthy to Unhealthy Snack Ratio"
+		<< "Option 6: Show End of Day Facts and Exit Program\n"
+		<< "Please choose a Menu Option: ";
+	getline(cin, select);
+	cout << endl;
+
+	bool inpCor = false;
+
+	while (!inpCor) {
+
+		if (select.size() > 1) {
+			inpCor = false;
+			inpErr(select, NUM_SEL);
+			getline(cin, select);
+			cout << endl;
+		}
+
+		else if (!isdigit(select.at(0))) {
+			inpCor = false;
+			inpErr(select, NUM_SEL);
+			getline(cin, select);
+			cout << endl;
+		}
+
+		else if (stoi(select) <= 0 || stoi(select) > NUM_SEL) {
+			inpCor = false;
+			inpErr(select, NUM_SEL);
+			getline(cin, select);
+			cout << endl;
+		}
+
+		else {
+			inpCor = true;
+		}
+
+	}
+
+	return stoi(select);
+}
+void inpErr(string inp, int numSel) {
+
+	cout << "Error: " << inp << " is not a valid selection.\n"
+		<< "Please choose from the Available Menu Options (1 - " << numSel << "): ";
+
+}
+
+
+void showList(const vector<FoodItem>& savedList, const vector<string>& savedName) {
+	cout << endl;
+	for (int i = 0; i < savedList.size(); i++) {
+		cout << endl << savedName[i] << ": " << savedList[i].calPerUnit << "Calories Per ";
+		cupGram(savedList[i].unit);
+	}
+}
+
+void showList(vector<Meal>& list) {
+	cout << endl;
+	for (int i = 0; i < list.size(); i++) {
+		list[i].showCons();
+	}
+}
+
+void showList(vector<Snack>& list) {
+	cout << endl;
+	for (int i = 0; i < list.size(); i++) {
+		list[i].showCons();
+	}
+}

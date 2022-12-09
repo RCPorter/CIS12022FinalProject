@@ -134,7 +134,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Consume.h" />
-    <ClInclude Include="Func.h" />
     <ClInclude Include="Meal.h" />
     <ClInclude Include="Snack.h" />
   </ItemGroup>

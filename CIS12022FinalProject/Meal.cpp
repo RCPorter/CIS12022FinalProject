@@ -13,8 +13,9 @@ int Meal::getTotalCals() {
 }
 
 void Meal::showCons() {
+	cout << endl;
 	for (int i = 0; i < ate.size(); i++) {
 		showItem(i);
 	}
-	cout << "\nTotal Caleries in Meal: " << getTotalCals();
+	cout << "\nTotal Calories in Meal: " << getTotalCals();
 }
