@@ -3,7 +3,7 @@
 void Snack::setHealthy() {
 	string choice;
 	char convChoice;
-	cout << "Was this a healthy snack? (y for Yes, n for No): ";
+	cout << "\nWas this a healthy snack? (y for Yes, n for No): ";
 	getline(cin, choice);
 
 	convChoice = tolower(choice.at(0));

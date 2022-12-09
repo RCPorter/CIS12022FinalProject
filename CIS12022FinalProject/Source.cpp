@@ -8,6 +8,7 @@
 #include "Snack.h"
 #include <fstream>
 #include <iomanip>
+#include <cmath>
 
 int getItem(vector<FoodItem>& savedList, vector<string>& savedName);
 int checkList(const string& search, const vector<FoodItem>& savedList, const vector<string>& savedName);
@@ -23,6 +24,11 @@ void writeSave(vector<FoodItem>& savedList, vector<string>& savedName);
 int getMenuSelect();
 void inpErr(string inp, int numSel);
 void showList(const vector<FoodItem>& savedList, const vector<string>& savedName);
+void showList(vector<Meal>& list);
+void showList(vector<Snack>& list);
+void showAvgCal(vector<Meal>& list);
+void showPerc(vector<Snack>& list);
+void showEoDFact(vector<Meal>& listM, vector<Snack>& listS);
 
 int main() {
 
@@ -50,10 +56,13 @@ int main() {
 			showList(savedItems, savedNames);
 			break;
 		case(4):
-
+			showAvgCal(listMeal);
 			break;
 		case(5):
-
+			showPerc(listSnack);
+			break;
+		case(6):
+			showEoDFact(listMeal, listSnack);
 			break;
 
 		}
@@ -269,15 +278,14 @@ int getMenuSelect() {
 	cout << setprecision(2) << fixed;
 
 	cout << "\nMain Menu:\n"
-		<< "Option 1: Add Meal"
-		<< "Option 2: Add Snack"
-		<< "Option 3: See List of Food Items"
-		<< "Option 4: Show Average Calories Per Meal"
-		<< "Option 5: Show Healthy to Unhealthy Snack Ratio"
-		<< "Option 6: Show End of Day Facts and Exit Program\n"
-		<< "Please choose a Menu Option: ";
+		<< "\nOption 1: Add Meal"
+		<< "\nOption 2: Add Snack"
+		<< "\nOption 3: See List of Food Items"
+		<< "\nOption 4: Show Average Calories Per Meal"
+		<< "\nOption 5: Show What Percentage of Snacks Have Been Healthy"
+		<< "\nOption 6: Show End of Day Facts and Exit Program\n"
+		<< "\nPlease choose a Menu Option: ";
 	getline(cin, select);
-	cout << endl;
 
 	bool inpCor = false;
 
@@ -314,7 +322,7 @@ int getMenuSelect() {
 }
 void inpErr(string inp, int numSel) {
 
-	cout << "Error: " << inp << " is not a valid selection.\n"
+	cout << "\nError: " << inp << " is not a valid selection.\n"
 		<< "Please choose from the Available Menu Options (1 - " << numSel << "): ";
 
 }
@@ -323,7 +331,7 @@ void inpErr(string inp, int numSel) {
 void showList(const vector<FoodItem>& savedList, const vector<string>& savedName) {
 	cout << endl;
 	for (int i = 0; i < savedList.size(); i++) {
-		cout << endl << savedName[i] << ": " << savedList[i].calPerUnit << "Calories Per ";
+		cout << endl << savedName[i] << ": " << savedList[i].calPerUnit << " Calories Per ";
 		cupGram(savedList[i].unit);
 	}
 }
@@ -340,4 +348,52 @@ void showList(vector<Snack>& list) {
 	for (int i = 0; i < list.size(); i++) {
 		list[i].showCons();
 	}
+}
+
+void showAvgCal(vector<Meal>& list) {
+	int total = 0;
+
+	for (int i = 0; i < list.size(); i++) {
+		total += list[i].getTotalCals();
+	}
+
+	cout << "\n\nAverage Calories Per Meal: " << total / list.size();
+}
+
+void showPerc(vector<Snack>& list) {
+	int total = 0;
+	for (int i = 0; i < list.size(); i++) {
+		if (list[i].getHealthy()) {
+			total++;
+		}
+	}
+	double decPerc = (double)total / double(list.size());
+	int perc = decPerc * 100;
+	cout << endl << endl << perc << "% of Snacks have been Healthy.";
+	if (perc < 50) {
+		cout << "\nTry eating more healthy snacks tomorrow.";
+	}
+	else {
+		cout << "\nKeep it up!";
+	}
+	
+}
+
+void showEoDFact(vector<Meal>& listM, vector<Snack>& listS) {
+	cout << "\nMeals Eaten Today: ";
+	showList(listM);
+	cout << "\nSnacks Eaten Today: ";
+	showList(listS);
+	
+	if (listS.size() > listM.size()) {
+		cout << "\nYou have eaten more snacks than meals today."
+			<< "\nTry eating fewer snacks tomorrow.";
+	}
+
+	if (listM.size() > 3) {
+		cout << "\nYou have eaten more than three meals today."
+			<< "\nTry eating fewer meals tomorrow.";
+	}
+
+	cout << "\nFun Fact: The Square Root of the Total Calories of your first meal of the day is " << sqrt(listM[0].getTotalCals());
 }
