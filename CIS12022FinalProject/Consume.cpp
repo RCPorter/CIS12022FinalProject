@@ -1,20 +1,19 @@
 #include "Consume.h"
 
-
 void Consume::addItem(const FoodItem& food, const string& foodName) {
 
 	pair<FoodItem, int> temp;
 	string holdQty;
-	int convQty;
+	double convQty;
 
 	cout << "\nPlease enter how many ";
 	cupGram(food.unit);
 	cout << " of " << foodName << " you ate: ";
 	getline(cin, holdQty);
-	convQty = intCheck(holdQty);
+	convQty = doubCheck(holdQty);
 	while (!convQty) {
-		intErr(holdQty);
-		convQty = intCheck(holdQty);
+		doubErr(holdQty);
+		convQty = doubCheck(holdQty);
 	}
 
 	temp.first = food;
@@ -24,15 +23,19 @@ void Consume::addItem(const FoodItem& food, const string& foodName) {
 	name.push_back(foodName);
 }
 
-int Consume::itemCal(int sub) {
-	return ate[sub].first.calPerUnit * ate[sub].second;
-}
-
 void Consume::showItem(int sub) {
+
 	cout << endl << endl << ate[sub].second << " ";
 	cupGram(ate[sub].first.unit);
 	cout << " of " << name[sub] << ": " << itemCal(sub);
 	cout << " Calories";
+
+}
+
+double Consume::itemCal(int sub) {
+
+	return (double)ate[sub].first.calPerUnit * ate[sub].second;
+
 }
 
 void Consume::showList() {
@@ -40,24 +43,11 @@ void Consume::showList() {
 	for (int i = 0; i < ate.size(); i++) {
 		showItem(i);
 	}
-}
 
-int Consume::intCheck(const string& test) {
-	for (int i = 0; i < test.length(); i++) {
-		if (!isdigit(test.at(i))) {
-			return 0;
-		}
-	}
-	return stoi(test);
-
-}
-
-void Consume::intErr(string& test) {
-	cout << "\nError: " << test << " is not a valid option. Please enter a positive whole number (ex. 100): ";
-	getline(cin, test);
 }
 
 void Consume::cupGram(char unit) {
+
 	if (unit == 'g') {
 		cout << "Grams";
 	}
@@ -67,4 +57,31 @@ void Consume::cupGram(char unit) {
 	else {
 		cout << "Critical Unit Error";
 	}
+
+}
+
+double Consume::doubCheck(const string& test) {
+
+	int dotCnt = 0;
+	for (int i = 0; i < test.size(); i++) {
+		if (!isdigit(test.at(i)) && test.at(i) != '.') {
+			return 0.0;
+		}
+		if (test.at(i) == '.') {
+			dotCnt++;
+			if (dotCnt > 1) {
+				return 0.0;
+			}
+		}
+
+	}
+	return stod(test);
+
+}
+
+void Consume::doubErr(string& test) {
+
+	cout << "\nError: " << test << " is not a valid option. Please enter a positive number (ex. 1.5): ";
+	getline(cin, test);
+
 }

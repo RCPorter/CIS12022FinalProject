@@ -13,11 +13,11 @@ public:
 	Snack() : Consume::Consume() {};
 	
 	//Mutator
-	void setHealthy();
+	void setHealthy();//Snack.cpp: 3-25
 
 	//Accessor
 	inline bool getHealthy() { return healthy; };
-	void showCons();
+	void showCons();//Snack.cpp: 27-40
 };
 
 #endif SNACK_H

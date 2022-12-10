@@ -12,8 +12,8 @@ public:
 	Meal() : Consume::Consume() {};
 
 	//Accessor
-	int getTotalCals();
-	void showCons();
+	double getTotalCals();//Meal.cpp: 3-14
+	void showCons();//Meal.cpp: 16-24
 };
 
 #endif MEAL_H

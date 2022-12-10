@@ -1,6 +1,7 @@
 #include "Snack.h"
 
 void Snack::setHealthy() {
+
 	string choice;
 	char convChoice;
 	cout << "\nWas this a healthy snack? (y for Yes, n for No): ";
@@ -20,9 +21,11 @@ void Snack::setHealthy() {
 	else {
 		healthy = false;
 	}
+
 }
 
 void Snack::showCons() {
+
 	cout << endl;
 	for (int i = 0; i < ate.size(); i++) {
 		showItem(i);

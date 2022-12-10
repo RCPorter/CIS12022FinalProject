@@ -1,8 +1,8 @@
 #include "Meal.h"
 
-int Meal::getTotalCals() {
+double Meal::getTotalCals() {
 	
-	int total = 0;
+	double total = 0.0;
 
 	for (int i = 0; i < ate.size(); i++) {
 
@@ -10,12 +10,15 @@ int Meal::getTotalCals() {
 
 	}
 	return total;
+
 }
 
 void Meal::showCons() {
+
 	cout << endl;
 	for (int i = 0; i < ate.size(); i++) {
 		showItem(i);
 	}
 	cout << "\nTotal Calories in Meal: " << getTotalCals();
+
 }
